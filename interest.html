@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gold Shop Interest Calculator</title>
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 10px;
+      padding: 100;
+      background: #2f3b52;
+      color: #fff;
+      height: 170vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    /* Container for the Form */
+    .container {
+      background-color: #1f2a38;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 600px; /* Increased width for better display */
+      box-sizing: border-box;
+    }
+
+    h1 {
+      color: #ffcf40;
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 0;
+    }
+
+    /* Form Elements */
+    label {
+      font-size: 18px;
+      margin-top: 15px;
+      display: block;
+      color: #b4c1d7;
+      font-weight: bold;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      box-sizing: border-box;
+      transition: 0.3s;
+    }
+
+    input {
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    input:focus {
+      border-color: #4e6b8f;
+    }
+
+    button {
+      background: #4e6b8f;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background-color: #39516a;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Result Display */
+    .bill {
+      margin-top: 30px;
+      background-color: #222;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      text-align: left;
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .bill p {
+      margin: 15px 0;
+      font-size: 20px;
+    }
+
+    .value {
+      color: #4e6b8f;
+      font-size: 22px;
+    }
+
+    .total-amount {
+      font-size: 28px;
+      color: #4e6b8f;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        width: 90%;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .bill p {
+        font-size: 18px;
+      }
+
+      .value {
+        font-size: 20px;
+      }
+
+      .total-amount {
+        font-size: 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      label {
+        font-size: 16px;
+      }
+
+      input, button {
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      .bill p {
+        font-size: 16px;
+      }
+
+      .value {
+        font-size: 18px;
+      }
+
+      .total-amount {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container"> 
+    <h1>GKJ Interest Calculator</h1>
+    <label for="totalPrincipal">Enter the total principal amount (₹):</label>
+    <input type="number" id="totalPrincipal" placeholder="e.g., 10000" required>
+    <label for="paidPrincipal">Amount already paid towards the principal (₹):</label>
+    <input type="number" id="paidPrincipal" value="0" required>
+    <label for="startDate">Enter the start date:</label>
+    <input type="date" id="startDate" required>
+    <label for="endDate">Enter the closing date:</label>
+    <input type="date" id="endDate" value="" required>
+    <label for="rate">Enter the monthly interest rate (%):</label>
+    <input type="number" id="rate" placeholder="e.g., 2" required>
+    <label for="paidMonths">How many months' interest have you already paid?</label>
+    <input type="number" id="paidMonths" value="0" required>
+    <button onclick="calculateInterest()">Calculate</button>
+    <div id="result" class="bill"></div>
+  </div>
+
+  <script>
+    // Pre-fill today's date as the default closing date
+    document.getElementById('endDate').value = new Date().toISOString().split('T')[0];
+
+    function calculateInterest() {
+      const totalPrincipal = parseFloat(document.getElementById('totalPrincipal').value);
+      const paidPrincipal = parseFloat(document.getElementById('paidPrincipal').value || 0); // Default to 0 if empty
+      const startDateInput = document.getElementById('startDate').value;
+      const endDateInput = document.getElementById('endDate').value;
+      const rate = parseFloat(document.getElementById('rate').value);
+      const paidMonths = parseInt(document.getElementById('paidMonths').value || 0, 10); // Default to 0 if empty
+      const result = document.getElementById('result');
+
+      if (
+        isNaN(totalPrincipal) || isNaN(paidPrincipal) || isNaN(rate) || isNaN(paidMonths) ||
+        !startDateInput || !endDateInput
+      ) {
+        result.innerHTML = '<p style="color:red;">Please fill in all fields correctly.</p>';
+        return;
+      }
+
+      if (paidPrincipal > totalPrincipal) {
+        result.innerHTML = '<p style="color:red;">Paid principal cannot exceed total principal.</p>';
+        return;
+      }
+
+      const startDate = new Date(startDateInput);
+      const endDate = new Date(endDateInput);
+
+      if (startDate > endDate) {
+        result.innerHTML = '<p style="color:red;">Closing date cannot be earlier than the start date.</p>';
+        return;
+      }
+
+      const remainingPrincipal = totalPrincipal - paidPrincipal;
+
+      let totalMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+      totalMonths += endDate.getMonth() - startDate.getMonth();
+
+      if (endDate.getDate() > startDate.getDate()) {
+        totalMonths += 1; // Include partial months
+      }
+
+      const unpaidMonths = totalMonths - paidMonths;
+
+      if (unpaidMonths < 0) {
+        result.innerHTML = '<p style="color:red;">You have already paid for all months or overpaid.</p>';
+        return;
+      }
+
+      const unpaidInterest = (remainingPrincipal * rate * unpaidMonths) / 100;
+      const finalAmount = remainingPrincipal + unpaidInterest;
+
+      result.innerHTML = `
+        <p>Total Principal: <span class="value">₹${totalPrincipal.toFixed(2)}</span></p>
+        <p>Paid Principal: <span class="value">₹${paidPrincipal.toFixed(2)}</span></p>
+        <p>Remaining Principal: <span class="value">₹${remainingPrincipal.toFixed(2)}</span></p>
+        <p>Monthly Interest Rate: <span class="value">${rate}%</span></p>
+        <p>Total Months: <span class="value">${totalMonths}</span></p>
+        <p>Months Already Paid: <span class="value">${paidMonths}</span></p>
+        <p>Unpaid Months: <span class="value">${unpaidMonths}</span></p>
+        <p>Unpaid Interest: <span class="value">₹${unpaidInterest.toFixed(2)}</span></p>
+        <div class="total-amount">Total Amount Payable: ₹${finalAmount.toFixed(2)}</div>
+      `;
+    }
+  </script>
+</body>
+</html>
